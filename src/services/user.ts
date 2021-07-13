@@ -11,7 +11,7 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 const _jwtSecret = process.env.JWT_SECRET;
-const _saltRounds = process.env.SALT_ROUNDS;
+const _saltRounds = Number(process.env.SALT_ROUNDS); //bcrypt requires the saltRound to be a number
 
 export class UserService {
   static get userAttributes() {

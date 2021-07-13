@@ -18,7 +18,7 @@ export const userRules = {
     check("password").isLength({ min: 8 }).withMessage("Invalid password"),
     check("confirmPassword")
       .custom(
-        (confirmPassword, { req }) => req.query.password === confirmPassword
+        (confirmPassword, { req }) => req.body.password === confirmPassword
       )
       .withMessage("Passwords are different"),
     check("name").optional(),
@@ -35,7 +35,7 @@ export const userRules = {
         })
       ),
     check("password").custom((password, { req }) => {
-      return User.findOne({ where: { email: req.query.email } }).then(
+      return User.findOne({ where: { email: req.body.email } }).then(
         async (user) => {
           await bcrypt.compare(password, user.password).then((equal) => {
             if (!equal) {

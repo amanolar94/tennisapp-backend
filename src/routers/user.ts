@@ -19,6 +19,7 @@ userRouter.post("/register", userRules["forRegister"], (req, res) => {
 
 userRouter.post("/login", userRules["forLogin"], (req, res) => {
   const errors = validationResult(req);
+
   if (!errors.isEmpty()) return res.status(422).json(errors.array());
 
   const payload = matchedData(req) as UserCreationAttributes;
