@@ -13,14 +13,14 @@ if (process.env.NODE_ENV !== "production") {
 const _jwtSecret = process.env.JWT_SECRET;
 const _saltRounds = Number(process.env.SALT_ROUNDS); //bcrypt requires the saltRound to be a number
 
-export class UserService {
+export class AuthService {
   static get userAttributes() {
     return ["email", "name"];
   }
   private static _user;
 
   static get user() {
-    return UserService._user;
+    return AuthService._user;
   }
 
   register({ email, password, name }: UserCreationAttributes) {
@@ -61,7 +61,7 @@ export class UserService {
           return;
         }
 
-        UserService._user = User.findByPk(decoded["email"]);
+        AuthService._user = User.findByPk(decoded["email"]);
         resolve(true);
         return;
       });
@@ -83,7 +83,7 @@ export class UserService {
           ],
         },
       ],
-      attributes: UserService.userAttributes,
+      attributes: AuthService.userAttributes,
     }) as Bluebird<UserInstance>;
   }
 }

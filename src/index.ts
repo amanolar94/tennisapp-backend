@@ -1,7 +1,7 @@
 import * as express from "express";
 import * as cors from "cors";
 import * as bodyParser from "body-parser";
-import { userRouter } from "./routers/user";
+import { authRouter } from "./routers/auth";
 import { tokenGuard } from "./middlewares/tokenGuard";
 
 if (process.env.NODE_ENV !== "production") {
@@ -13,11 +13,11 @@ const port = process.env.PORT;
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
-app.use("/", userRouter);
+app.use("/", authRouter);
 
 // Unprotected Get
 app.get("/some-resource", (req, res) => {
-  res.json({ response: "Hello World!" });
+  res.json({ response: "Unprotected Hello World!" });
 });
 
 app.use(tokenGuard());
