@@ -2,12 +2,10 @@ import { sequelize } from "./../instances/sequelize";
 import * as bcrypt from "bcrypt";
 import * as jwt from "jsonwebtoken";
 import * as Bluebird from "bluebird";
-import User, {
-  UserCreationAttributes,
-  UserInstance,
-  UserLoginAttributes,
-} from "../models/user";
+import User, { UserCreationAttributes, UserInstance } from "../models/user";
 import Player from "../models/player";
+
+const Promise = Bluebird;
 
 if (process.env.NODE_ENV !== "production") {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -16,6 +14,8 @@ if (process.env.NODE_ENV !== "production") {
 
 const _jwtSecret = process.env.JWT_SECRET;
 const _saltRounds = Number(process.env.SALT_ROUNDS); //bcrypt requires the saltRound to be a number
+
+type LoginResponse = { token: string; refreshToken: string };
 
 export class AuthService {
   static get userAttributes() {
@@ -51,7 +51,7 @@ export class AuthService {
     });
   }
 
-  login(email: string) {
+  login(email: string): Bluebird<LoginResponse> {
     return this.getUserByEmail(email).then((user) => {
       return {
         token: jwt.sign({ user }, _jwtSecret, {
@@ -64,7 +64,11 @@ export class AuthService {
     });
   }
 
-  refreshToken({ refreshToken }: { refreshToken: string }) {
+  refreshToken({
+    refreshToken,
+  }: {
+    refreshToken: string;
+  }): Bluebird<{ err: jwt.VerifyErrors } | LoginResponse> {
     return new Promise((resolve) => {
       jwt.verify(refreshToken, _jwtSecret, (err, decoded) => {
         if (err) {
