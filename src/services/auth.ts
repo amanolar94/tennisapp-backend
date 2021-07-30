@@ -2,7 +2,11 @@ import { sequelize } from "./../instances/sequelize";
 import * as bcrypt from "bcrypt";
 import * as jwt from "jsonwebtoken";
 import * as Bluebird from "bluebird";
-import User, { UserCreationAttributes, UserInstance } from "../models/user";
+import User, {
+  UserCreationAttributes,
+  UserInstance,
+  UserLoginAttributes,
+} from "../models/user";
 import Player from "../models/player";
 
 if (process.env.NODE_ENV !== "production") {
@@ -47,9 +51,28 @@ export class AuthService {
     });
   }
 
-  login({ email }: UserCreationAttributes) {
+  login(email: string) {
     return this.getUserByEmail(email).then((user) => {
-      return jwt.sign({ user }, _jwtSecret);
+      return {
+        token: jwt.sign({ user }, _jwtSecret, {
+          expiresIn: "5m",
+        }),
+        refreshToken: jwt.sign({ user }, _jwtSecret, {
+          expiresIn: "5 days",
+        }),
+      };
+    });
+  }
+
+  refreshToken({ refreshToken }: { refreshToken: string }) {
+    return new Promise((resolve) => {
+      jwt.verify(refreshToken, _jwtSecret, (err, decoded) => {
+        if (err) {
+          resolve({ err });
+        } else {
+          resolve(this.login(decoded["user"]["email"]));
+        }
+      });
     });
   }
 

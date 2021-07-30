@@ -10,6 +10,8 @@ export type UserAttributes = {
 
 export type UserCreationAttributes = Optional<UserAttributes, "name">;
 
+export type UserLoginAttributes = Omit<UserAttributes, "name">;
+
 export interface UserInstance
   extends Model<UserAttributes, UserCreationAttributes>,
     UserAttributes {

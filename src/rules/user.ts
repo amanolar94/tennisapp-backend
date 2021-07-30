@@ -46,4 +46,5 @@ export const userRules = {
       );
     }),
   ],
+  forTokenRefresh: [check("refreshToken").exists()],
 };
