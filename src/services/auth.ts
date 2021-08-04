@@ -4,6 +4,7 @@ import * as jwt from "jsonwebtoken";
 import * as Bluebird from "bluebird";
 import User, { UserCreationAttributes, UserInstance } from "../models/user";
 import Player from "../models/player";
+import mailer from "../utils/mailer";
 
 const Promise = Bluebird;
 
@@ -77,6 +78,19 @@ export class AuthService {
           resolve(this.login(decoded["user"]["email"]));
         }
       });
+    });
+  }
+
+  resetPassword(email: string): Bluebird<any> {
+    return new Promise((resolve) => {
+      mailer()
+        .then((res) => {
+          resolve({ res });
+        })
+        .catch((err) => {
+          resolve({ err });
+        });
+      // resolve({ mail });
     });
   }
 

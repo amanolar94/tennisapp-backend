@@ -47,4 +47,16 @@ export const userRules = {
     }),
   ],
   forTokenRefresh: [check("refreshToken").exists()],
+  forPasswordReset: [
+    check("email")
+      .isEmail()
+      .withMessage("Invalid email format")
+      .custom((email) =>
+        User.findOne({ where: { email } }).then((user) => {
+          if (!user) {
+            return Promise.reject("E-mail does not exist");
+          }
+        })
+      ),
+  ],
 };
