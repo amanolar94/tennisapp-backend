@@ -38,13 +38,17 @@ authRouter.post("/login", userRules["forLogin"], (req, res) => {
   return token.then((response) => res.json({ response }));
 });
 
-authRouter.post("/resetPassword", userRules["forPasswordReset"], (req, res) => {
-  const errors = validationResult(req);
+authRouter.post(
+  "/requestPasswordReset",
+  userRules["forPasswordReset"],
+  (req, res) => {
+    const errors = validationResult(req);
 
-  if (!errors.isEmpty()) return res.status(422).json(errors.array());
+    if (!errors.isEmpty()) return res.status(422).json(errors.array());
 
-  const payload = matchedData(req) as resetPasswordPayload;
+    const payload = matchedData(req) as resetPasswordPayload;
 
-  const response = authService.resetPassword(payload.email);
-  return response.then((response) => res.json({ response }));
-});
+    const response = authService.requestPasswordReset(payload.email);
+    return response.then((response) => res.json({ response }));
+  }
+);

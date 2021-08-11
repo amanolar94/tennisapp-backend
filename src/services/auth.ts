@@ -4,9 +4,10 @@ import * as jwt from "jsonwebtoken";
 import * as Bluebird from "bluebird";
 import User, { UserCreationAttributes, UserInstance } from "../models/user";
 import Player from "../models/player";
+import PasswordReset from "../models/passwordReset";
 import mailer from "../utils/mailer";
 
-const Promise = Bluebird;
+// const Promise = Bluebird;
 
 if (process.env.NODE_ENV !== "production") {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -70,7 +71,7 @@ export class AuthService {
   }: {
     refreshToken: string;
   }): Bluebird<{ err: jwt.VerifyErrors } | LoginResponse> {
-    return new Promise((resolve) => {
+    return new Bluebird((resolve) => {
       jwt.verify(refreshToken, _jwtSecret, (err, decoded) => {
         if (err) {
           resolve({ err });
@@ -81,16 +82,38 @@ export class AuthService {
     });
   }
 
-  resetPassword(email: string): Bluebird<any> {
-    return new Promise((resolve) => {
-      mailer()
+  async sendResetEmail(userEmail: string) {
+    const t = await sequelize.transaction();
+    const token = jwt.sign({ userEmail }, _jwtSecret, { expiresIn: "2 days" });
+    try {
+      await PasswordReset.create(
+        {
+          userEmail,
+          token,
+        },
+        { transaction: t }
+      );
+
+      const mail = await mailer({ userEmail, token });
+
+      await t.commit();
+      return mail;
+    } catch (err) {
+      await t.rollback();
+
+      return err;
+    }
+  }
+
+  requestPasswordReset(email: string): Bluebird<any> {
+    return new Bluebird((resolve) => {
+      this.sendResetEmail(email)
         .then((res) => {
-          resolve({ res });
+          resolve(res);
         })
         .catch((err) => {
-          resolve({ err });
+          resolve(err);
         });
-      // resolve({ mail });
     });
   }
 
