@@ -84,15 +84,23 @@ export class AuthService {
 
   async sendResetEmail(userEmail: string) {
     const t = await sequelize.transaction();
-    const token = jwt.sign({ userEmail }, _jwtSecret, { expiresIn: "2 days" });
+    const token = jwt.sign({ userEmail }, _jwtSecret, { expiresIn: "2h" });
     try {
-      await PasswordReset.create(
-        {
-          userEmail,
-          token,
-        },
-        { transaction: t }
-      );
+      const resetEntry = await PasswordReset.findByPk(userEmail);
+      if (resetEntry !== null) {
+        await PasswordReset.update(
+          { token },
+          { where: { userEmail }, transaction: t }
+        );
+      } else {
+        await PasswordReset.create(
+          {
+            userEmail,
+            token,
+          },
+          { transaction: t }
+        );
+      }
 
       const mail = await mailer({ userEmail, token });
 

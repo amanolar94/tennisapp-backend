@@ -26,6 +26,6 @@ CREATE TABLE `player` (
 CREATE TABLE `resetPassword` ( 
     `userEmail` varchar(40) NOT NULL, 
     `token` varchar(200) NOT NULL, 
-    PRIMARY KEY (`userEmail`,`token`),
+    PRIMARY KEY (`userEmail`),
     FOREIGN KEY (`userEmail`) REFERENCES user(`email`)
     );

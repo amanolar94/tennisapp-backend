@@ -22,7 +22,6 @@ const resetPassword = sequelize.define<resetPasswordInstance>(
     },
     token: {
       allowNull: false,
-      primaryKey: true,
       type: DataTypes.TEXT,
     },
   },
