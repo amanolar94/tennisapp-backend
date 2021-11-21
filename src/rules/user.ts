@@ -21,5 +21,11 @@ export const userRules = {
       )
       .withMessage("Passwords are different"),
     check("name").optional(),
+    check("role")
+      .custom((role) => role === "player" || role === "sec")
+      .withMessage(
+        (role) =>
+          `The available roles are 'player' or 'sec' and you provided '${role}'`
+      ),
   ],
 };

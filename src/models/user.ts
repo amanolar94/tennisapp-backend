@@ -2,6 +2,12 @@ import { DataTypes, Model } from "sequelize";
 import { sequelize } from "instances/sequelize";
 import Player from "./player";
 
+export type Roles = "player" | "sec";
+
+export interface CreateUserRequest extends CreateUserParams {
+  role: Roles;
+}
+
 export type CreateUserParams = {
   email: string;
   password: string;
@@ -16,7 +22,7 @@ export type UserAttributes = {
 
 export type UserCreationAttributes = Omit<
   CreateUserParams,
-  "password" | "name" | "photoUrl"
+  "password" | "name" | "photoUrl" | "role"
 >;
 
 export type UserLoginAttributes = UserAttributes;

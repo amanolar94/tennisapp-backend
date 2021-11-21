@@ -3,9 +3,9 @@ import * as Bluebird from "bluebird";
 import { GenericError } from "types/requests";
 import { FirebaseError } from "firebase-admin";
 import { sequelize } from "instances/sequelize";
-import { createUser } from "./firebase/createUser";
-import User, { CreateUserParams, UserInstance } from "models/user";
 import { UserRecord } from "firebase-admin/lib/auth/user-record";
+import User, { CreateUserRequest, UserInstance } from "models/user";
+import { createUser, setUserRole } from "./firebase";
 
 // const Promise = Bluebird;
 
@@ -19,17 +19,18 @@ export class AuthService {
     return ["email", "name"];
   }
 
-  //TODO: Fix that any
-  private static _user: any; //eslint-disable-line
+  private static _user: UserRecord;
 
   static get user() {
     return AuthService._user;
   }
 
-  async register(params: CreateUserParams): Promise<UserRecord> {
+  async register(params: CreateUserRequest): Promise<UserRecord> {
+    const { role, ...details } = params;
     const transaction = await sequelize.transaction();
     try {
-      const user = await createUser(params);
+      const user = await createUser(details);
+      await setUserRole(user.uid, role);
       await User.create({ email: params.email }, { transaction });
       await Player.create(
         { userEmail: params.email, points: 0, commendmentsCount: 0 },

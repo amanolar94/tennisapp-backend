@@ -17,8 +17,8 @@ export const tokenGuard: () => RequestHandler = () => (req, res, next) => {
 
   const hasAccess = authService.verifyToken(token);
 
-  hasAccess.then((a) => {
-    if (!a) return res.status(403).send({ message: "No access" });
-    next();
-  });
+  // hasAccess.then((a) => {
+  //   if (!a) return res.status(403).send({ message: "No access" });
+  //   next();
+  // });
 };

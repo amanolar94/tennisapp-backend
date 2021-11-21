@@ -1,7 +1,7 @@
 import { userRules } from "rules/user";
 import { AuthService } from "services/auth";
 import { GenericError } from "types/requests";
-import { CreateUserParams } from "models/user";
+import { CreateUserRequest } from "models/user";
 import { FirebaseError } from "firebase-admin";
 import { Router, Request, Response } from "express";
 import { UserRecord } from "firebase-admin/lib/auth/user-record";
@@ -18,7 +18,7 @@ authRouter.post(
   "/register",
   userRules["forRegister"],
   async (
-    req: Request<CreateUserParams>,
+    req: Request<CreateUserRequest>,
     res: Response<
       | { response: UserRecord }
       | ValidationError[]
@@ -29,7 +29,7 @@ authRouter.post(
     const errors = validationResult(req);
     if (!errors.isEmpty()) return res.status(422).json(errors.array());
 
-    const payload = matchedData(req) as CreateUserParams;
+    const payload = matchedData(req) as CreateUserRequest;
     // const user = authService.register(payload);
 
     await authService
