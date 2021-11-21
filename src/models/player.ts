@@ -1,9 +1,8 @@
+import { sequelize } from "instances/sequelize";
 import { DataTypes, Model, Optional } from "sequelize";
-import { sequelize } from "../instances/sequelize";
 
 export type PlayerAttributes = {
   userEmail: string;
-  profilePhoto: string;
   points: number;
   commendmentsCount: number;
   penaltyExpiration: string;
@@ -12,11 +11,7 @@ export type PlayerAttributes = {
 
 export type PlayerCreationAttributes = Optional<
   PlayerAttributes,
-  | "profilePhoto"
-  | "points"
-  | "commendmentsCount"
-  | "penaltyExpiration"
-  | "penaltyReason"
+  "points" | "commendmentsCount" | "penaltyExpiration" | "penaltyReason"
 >;
 
 export interface PlayerInstance
@@ -31,10 +26,6 @@ const Player = sequelize.define<PlayerInstance>(
       primaryKey: true,
       type: DataTypes.TEXT,
       unique: true,
-    },
-    profilePhoto: {
-      allowNull: true,
-      type: DataTypes.TEXT,
     },
     points: {
       allowNull: true,

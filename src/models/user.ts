@@ -1,20 +1,29 @@
-import { DataTypes, Model, Optional } from "sequelize";
-import { sequelize } from "../instances/sequelize";
+import { DataTypes, Model } from "sequelize";
+import { sequelize } from "instances/sequelize";
 import Player from "./player";
+
+export type CreateUserParams = {
+  email: string;
+  password: string;
+  name?: string;
+  photoUrl?: string;
+};
 
 export type UserAttributes = {
   email: string;
-  name: string;
   password: string;
 };
 
-export type UserCreationAttributes = Optional<UserAttributes, "name">;
+export type UserCreationAttributes = Omit<
+  CreateUserParams,
+  "password" | "name" | "photoUrl"
+>;
 
-export type UserLoginAttributes = Omit<UserAttributes, "name">;
+export type UserLoginAttributes = UserAttributes;
 
 export interface UserInstance
-  extends Model<UserAttributes, UserCreationAttributes>,
-    UserAttributes {
+  extends Model<UserCreationAttributes, UserCreationAttributes>,
+    UserCreationAttributes {
   createdAt: string;
   updatedAt: string;
 }
@@ -27,14 +36,6 @@ const User = sequelize.define<UserInstance>(
       primaryKey: true,
       type: DataTypes.TEXT,
       unique: true,
-    },
-    name: {
-      allowNull: true,
-      type: DataTypes.TEXT,
-    },
-    password: {
-      allowNull: false,
-      type: DataTypes.TEXT,
     },
   },
   {

@@ -1,54 +1,44 @@
-import { matchedData, validationResult } from "express-validator";
-import { Router } from "express";
-import { userRules } from "../rules/user";
-import { AuthService } from "../services/auth";
-import { UserCreationAttributes, UserLoginAttributes } from "../models/user";
-import { resetPasswordPayload } from "../models/passwordReset";
+import { userRules } from "rules/user";
+import { AuthService } from "services/auth";
+import { GenericError } from "types/requests";
+import { CreateUserParams } from "models/user";
+import { FirebaseError } from "firebase-admin";
+import { Router, Request, Response } from "express";
+import { UserRecord } from "firebase-admin/lib/auth/user-record";
+import {
+  matchedData,
+  ValidationError,
+  validationResult,
+} from "express-validator";
 
 export const authRouter = Router();
 const authService = new AuthService();
 
-authRouter.post("/register", userRules["forRegister"], (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) return res.status(422).json(errors.array());
-
-  const payload = matchedData(req) as UserCreationAttributes;
-  const user = authService.register(payload);
-
-  return user.then((response) => res.json({ response }));
-});
-
-authRouter.post("/refreshToken", userRules["forTokenRefresh"], (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) return res.status(422).json(errors.array());
-
-  const payload = matchedData(req) as { refreshToken: string };
-  const token = authService.refreshToken(payload);
-
-  return token.then((response) => res.json({ response }));
-});
-
-authRouter.post("/login", userRules["forLogin"], (req, res) => {
-  const errors = validationResult(req);
-
-  if (!errors.isEmpty()) return res.status(422).json(errors.array());
-
-  const payload = matchedData(req) as UserLoginAttributes;
-  const token = authService.login(payload.email);
-  return token.then((response) => res.json({ response }));
-});
-
 authRouter.post(
-  "/requestPasswordReset",
-  userRules["forPasswordReset"],
-  (req, res) => {
+  "/register",
+  userRules["forRegister"],
+  async (
+    req: Request<CreateUserParams>,
+    res: Response<
+      | { response: UserRecord }
+      | ValidationError[]
+      | FirebaseError
+      | GenericError
+    >
+  ) => {
     const errors = validationResult(req);
-
     if (!errors.isEmpty()) return res.status(422).json(errors.array());
 
-    const payload = matchedData(req) as resetPasswordPayload;
+    const payload = matchedData(req) as CreateUserParams;
+    // const user = authService.register(payload);
 
-    const response = authService.requestPasswordReset(payload.email);
-    return response.then((response) => res.json({ response }));
+    await authService
+      .register(payload)
+      .then((response) => {
+        return res.json({ response });
+      })
+      .catch((err) => {
+        return res.json({ err });
+      });
   }
 );

@@ -1,6 +1,5 @@
-import * as bcrypt from "bcrypt";
+import User from "models/user";
 import { check } from "express-validator";
-import User from "../models/user";
 
 export const userRules = {
   forRegister: [
@@ -22,41 +21,5 @@ export const userRules = {
       )
       .withMessage("Passwords are different"),
     check("name").optional(),
-  ],
-  forLogin: [
-    check("email")
-      .isEmail()
-      .withMessage("Invalid email format")
-      .custom((email) =>
-        User.findOne({ where: { email } }).then((user) => {
-          if (!user) {
-            return Promise.reject("Invalid email or password");
-          }
-        })
-      ),
-    check("password").custom((password, { req }) => {
-      return User.findOne({ where: { email: req.body.email } }).then(
-        async (user) => {
-          await bcrypt.compare(password, user.password).then((equal) => {
-            if (!equal) {
-              return Promise.reject("Invalid email or password");
-            }
-          });
-        }
-      );
-    }),
-  ],
-  forTokenRefresh: [check("refreshToken").exists()],
-  forPasswordReset: [
-    check("email")
-      .isEmail()
-      .withMessage("Invalid email format")
-      .custom((email) =>
-        User.findOne({ where: { email } }).then((user) => {
-          if (!user) {
-            return Promise.reject("E-mail does not exist");
-          }
-        })
-      ),
   ],
 };

@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./src",
+    "target": "es6",
+    "moduleResolution": "node",
+    "noImplicitAny": true
+  },
+  "exclude": ["node_modules", "Build"]
+}

@@ -3,6 +3,7 @@ import * as cors from "cors";
 import * as bodyParser from "body-parser";
 import { authRouter } from "./routers/auth";
 import { tokenGuard } from "./middlewares/tokenGuard";
+// import { initialize_firebase } from "./services/firebase";
 
 if (process.env.NODE_ENV !== "production") {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -10,6 +11,7 @@ if (process.env.NODE_ENV !== "production") {
 }
 const app = express();
 const port = process.env.PORT;
+// initialize_firebase();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());

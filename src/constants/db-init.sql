@@ -5,8 +5,6 @@ use tennisapp;
 
 CREATE TABLE `user` ( 
     `email` varchar(40) NOT NULL, 
-    `password` varchar(60) NOT NULL, 
-    `name` varchar(40), 
     `createdAt` varchar(60), 
     `updatedAt` varchar(60),
     PRIMARY KEY (`email`)
@@ -14,7 +12,6 @@ CREATE TABLE `user` (
 
 CREATE TABLE `player` ( 
     `userEmail` varchar(40) NOT NULL, 
-    `profilePhoto` varchar(60), 
     `points` int(4), 
     `commendmentsCount` int(4),
     `penaltyExpiration` varchar(60),
@@ -23,9 +20,3 @@ CREATE TABLE `player` (
     FOREIGN KEY (`userEmail`) REFERENCES user(`email`)
     );
 
-CREATE TABLE `resetPassword` ( 
-    `userEmail` varchar(40) NOT NULL, 
-    `token` varchar(200) NOT NULL, 
-    PRIMARY KEY (`userEmail`),
-    FOREIGN KEY (`userEmail`) REFERENCES user(`email`)
-    );
