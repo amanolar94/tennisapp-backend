@@ -1,4 +1,4 @@
-import { Roles } from "./../../models/user";
+import { Roles } from "../../models/user";
 import { FirebaseAdmin } from ".";
 import { CreateUserParams } from "models/user";
 
@@ -20,4 +20,9 @@ export const setRole = async (userId: string, role: Roles) => {
     [role]: true,
   });
   return roleSet;
+};
+
+export const generateEmailVerificationLink = async (email: string) => {
+  const link = await FirebaseAdmin.auth().generateEmailVerificationLink(email);
+  return link;
 };

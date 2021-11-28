@@ -1,7 +1,7 @@
 import * as express from "express";
 import * as cors from "cors";
 import * as bodyParser from "body-parser";
-import { authRouter } from "./routers/auth";
+import { authRouter } from "./routers";
 import { tokenGuard } from "./middlewares/tokenGuard";
 // import { initialize_firebase } from "./services/firebase";
 
