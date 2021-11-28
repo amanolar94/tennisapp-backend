@@ -26,3 +26,13 @@ export const generateEmailVerificationLink = async (email: string) => {
   const link = await FirebaseAdmin.auth().generateEmailVerificationLink(email);
   return link;
 };
+
+export const verifyToken = async (idToken: string) => {
+  const decoded = await FirebaseAdmin.auth().verifyIdToken(idToken);
+  return decoded;
+};
+
+export const getUser = async (uid: string) => {
+  const user = await FirebaseAdmin.auth().getUser(uid);
+  return user;
+};

@@ -2,8 +2,7 @@ import * as express from "express";
 import * as cors from "cors";
 import * as bodyParser from "body-parser";
 import { authRouter } from "./routers";
-import { tokenGuard } from "./middlewares/tokenGuard";
-// import { initialize_firebase } from "./services/firebase";
+import { appRouter } from "routers";
 
 if (process.env.NODE_ENV !== "production") {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -16,18 +15,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 app.use("/", authRouter);
-
-// Unprotected Get
-app.get("/some-resource", (req, res) => {
-  res.json({ response: "Unprotected Hello World!" });
-});
-
-app.use(tokenGuard());
-
-// Protected Get
-app.get("/some-protected-resource", (req, res) => {
-  res.json("Protected Hello World");
-});
+app.use("/app", appRouter);
 
 app.listen(port, () => {
   console.log(`App is listening on port ${port}`);
