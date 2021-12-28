@@ -5,7 +5,9 @@
   "main": "src/index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "PORT=8000 NODE_ENV=development NODE_PATH=./src nodemon src/index.ts"
+    "start": "docker compose start && PORT=8000 NODE_ENV=development NODE_PATH=./src nodemon src/index.ts",
+    "start-docker": " docker compose start",
+    "stop-docker": "docker compose stop"
   },
   "keywords": [
     "typescript",
