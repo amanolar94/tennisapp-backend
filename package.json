@@ -5,7 +5,7 @@
   "main": "src/index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "NODE_ENV=development NODE_PATH=./src nodemon src/index.ts"
+    "start": "PORT=8000 NODE_ENV=development NODE_PATH=./src nodemon src/index.ts"
   },
   "keywords": [
     "typescript",
@@ -29,7 +29,7 @@
     "jsonwebtoken": "^8.5.1",
     "mariadb": "^2.5.3",
     "nodemailer": "^6.6.3",
-    "sequelize": "^6.6.2"
+    "sequelize": "^6.12.3"
   },
   "devDependencies": {
     "@types/bcrypt": "^3.0.1",

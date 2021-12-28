@@ -3,3 +3,5 @@ dist/*
 package-lock.json
 .env
 firebase-application-credentials.ts
+db
+docker-compose.yml
