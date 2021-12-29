@@ -1,8 +1,6 @@
 import { RequestHandler } from "express";
 import { IncomingHttpHeaders } from "http";
-import { AuthService } from "services/auth";
-
-const authService = new AuthService();
+import { verifyFirebaseToken } from "services/firebase";
 
 function getTokenFromHeaders(headers: IncomingHttpHeaders) {
   const header = headers.authorization as string;
@@ -11,14 +9,16 @@ function getTokenFromHeaders(headers: IncomingHttpHeaders) {
   return header.split(" ")[1];
 }
 
-export const tokenGuard: () => RequestHandler = () => (req, res, next) => {
+export const tokenGuard: RequestHandler = async (req, res, next) => {
   const token =
     getTokenFromHeaders(req.headers) || req.query.token || req.body.token || "";
-
-  const hasAccess = authService.verifyToken(token);
-
-  // hasAccess.then((a) => {
-  //   if (!a) return res.status(403).send({ message: "No access" });
-  //   next();
-  // });
+  try {
+    //TODO: until the front end is built to obtain a token this is commented out
+    // const userInfo = await verifyFirebaseToken(token);
+    return next();
+  } catch (e) {
+    return res
+      .status(403)
+      .send({ error: "You are not authorised to make this request" });
+  }
 };

@@ -10,9 +10,9 @@ const pass = process.env.SMTP_PASSWORD;
 const port = parseInt(process.env.SMTP_PORT);
 const host = process.env.SMTP_SERVER;
 
-type MailerProps = { userEmail: string; token: string };
+type MailerProps = { userEmail: string; link: string };
 
-async function mailer({ userEmail, token }: MailerProps) {
+async function requestEmailVerification({ userEmail, link }: MailerProps) {
   const transporter = nodemailer.createTransport({
     host,
     port,
@@ -23,17 +23,17 @@ async function mailer({ userEmail, token }: MailerProps) {
     },
   });
 
-  const html = `<p>To reset your password please follow <a href="localhost:3030/resetPasword?token=${token}">this</a>link</p> `;
+  const html = `<p>To verify your email please follow <a href="${link}">this</a> link</p> `;
 
   const info = await transporter.sendMail({
     from: '"Tennis App" <aristos.manolarakis@gmail.com>', //eslint-disable-line
     to: userEmail,
-    subject: "Reset your password",
-    text: `To reset your password please follow this link localhost:3030/resetPasword?token=${token} `,
+    subject: "Email verification",
+    text: `To verify your email please follow this link ${link}`,
     html,
   });
 
   return info;
 }
 
-export default mailer;
+export default requestEmailVerification;
