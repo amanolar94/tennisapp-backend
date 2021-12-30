@@ -14,9 +14,7 @@ export type PlayerCreationAttributes = Optional<
   "points" | "commendmentsCount" | "penaltyExpiration" | "penaltyReason"
 >;
 
-export interface PlayerInstance
-  extends Model<PlayerAttributes, PlayerCreationAttributes>,
-    PlayerAttributes {}
+export type PlayerInstance = Model<PlayerAttributes, PlayerCreationAttributes>;
 
 const Player = sequelize.define<PlayerInstance>(
   "player",
