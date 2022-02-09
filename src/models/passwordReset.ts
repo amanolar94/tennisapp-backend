@@ -8,6 +8,4 @@ export type resetPasswordAttributes = {
 
 export type resetPasswordPayload = { email: string };
 
-export interface resetPasswordInstance
-  extends Model<resetPasswordAttributes>,
-    resetPasswordAttributes {}
+export type resetPasswordInstance = Model<resetPasswordAttributes>;

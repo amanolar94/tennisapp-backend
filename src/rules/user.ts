@@ -27,5 +27,13 @@ export const userRules = {
         (role) =>
           `The available roles are 'player' or 'sec' and you provided '${role}'`
       ),
+    check("clubId")
+      .custom((clubId, { req }) =>
+        req.body.role === "sec" ? Boolean(clubId) : true
+      )
+      .withMessage(
+        () =>
+          "For creating a secretary account you need to provide a clubId as well"
+      ),
   ],
 };

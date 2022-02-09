@@ -1,12 +1,9 @@
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "instances/sequelize";
 import Player from "./player";
+import Secretary from "./secretary";
 
 export type Roles = "player" | "sec";
-
-export interface CreateUserRequest extends CreateUserParams {
-  role: Roles;
-}
 
 export type CreateUserParams = {
   email: string;
@@ -14,6 +11,10 @@ export type CreateUserParams = {
   name?: string;
   photoUrl?: string;
 };
+export interface CreateUserRequest extends CreateUserParams {
+  role: Roles;
+  clubId?: number;
+}
 
 export type UserAttributes = {
   email: string;
@@ -57,6 +58,17 @@ User.hasMany(Player, {
 
 Player.belongsTo(User, {
   foreignKey: "userEmail",
+  as: "user",
+});
+
+User.hasMany(Secretary, {
+  sourceKey: "email",
+  foreignKey: "secretaryEmail",
+  as: "secretary",
+});
+
+Secretary.belongsTo(User, {
+  foreignKey: "secretaryEmail",
   as: "user",
 });
 
